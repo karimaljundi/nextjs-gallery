@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   try {
     await connectDB();
 
-    const { name, email, password, phone } = await request.json();
+    const { username, email, password } = await request.json();
 
     if (password.length < 6) {
       return NextResponse.json(
@@ -29,9 +29,8 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = new User({
-      name,
+      username,
       email,
-      phone,
       password: hashedPassword,
     });
 
@@ -39,7 +38,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        name: savedUser.name,
+        username: savedUser.username,
         email: savedUser.email,
         createdAt: savedUser.createdAt,
         updatedAt: savedUser.updatedAt,
@@ -63,7 +62,7 @@ export async function PUT(request: Request) {
   try {
     await connectDB();
 
-    const { userId, name, email, password, phone, address } = await request.json();
+    const { userId, username, email, password} = await request.json();
 
     if (password && password.length < 6) {
       return NextResponse.json(
@@ -81,8 +80,8 @@ export async function PUT(request: Request) {
       );
     }
 
-    if (name) {
-      userToUpdate.name = name;
+    if (username) {
+      userToUpdate.username = username;
     }
 
     if (email) {
@@ -94,13 +93,9 @@ export async function PUT(request: Request) {
       userToUpdate.password = hashedPassword;
     }
 
-    if (phone) {
-      userToUpdate.phone = phone;
-    }
+    
 
-    if (address) {
-      userToUpdate.address = address;
-    }
+    
 
     await userToUpdate.save();
 
@@ -111,7 +106,7 @@ export async function PUT(request: Request) {
         message: "User updated successfully",
         updatedUser: {
           id: userToUpdate._id,
-          name: userToUpdate.name,
+          username: userToUpdate.username,
           email: userToUpdate.email,
           createdAt: userToUpdate.createdAt,
           updatedAt: userToUpdate.updatedAt,

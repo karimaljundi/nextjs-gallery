@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 
 export default function Home() {
   const { status } = useSession();
-
+const {data: session} = useSession();
   const showSession = () => {
     if (status === "authenticated") {
       return (
@@ -34,10 +34,12 @@ export default function Home() {
       )
     }
   }
+  console.log("sesion log:",session, status);
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="text-xl">NextAuth APP</h1>
       {showSession()}
     </main>
   );
+  
 }

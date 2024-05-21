@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions  = {
         return {
           ...token,
           id: u.id,
-          phone: u.phone,
+          isArtist: u.isArtist,
         };
       }
       return token;
@@ -64,6 +64,9 @@ export const authOptions: NextAuthOptions  = {
           ...session.user,
           _id: token.id,
           name: token.name,
+          email: token.email,
+          isArtist: token.isArtist,
+          
         }
       };
     },

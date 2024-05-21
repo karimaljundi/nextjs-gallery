@@ -29,13 +29,13 @@ const Signup = () => {
       const signupResponse = await axios.post(`${baseUrl}/api/auth/signup`, {
         email: formData.get("email"),
         password: formData.get("password"),
-        name: formData.get("name"),
-        phone: formData.get("phone"),
+        username: formData.get("username"),
       });
 
       const res = await signIn("credentials", {
         email: signupResponse.data.email,
         password: formData.get("password"),
+        username: formData.get("username"),
         redirect: false,
       });
 
@@ -59,12 +59,12 @@ const Signup = () => {
         {error && <div className="">{error}</div>}
         <h1 className="mb-5 w-full text-2xl font-bold">Signup</h1>
 
-        <label className={labelStyles}>Fullname:</label>
+        <label className={labelStyles}>username:</label>
         <input
           type="text"
-          placeholder="Fullname"
+          placeholder="username"
           className="w-full h-8 border border-solid border-[#242424] py-1 px-2.5 rounded bg-black text-[13px]"
-          name="name"
+          name="username"
         />
 
         <label className={labelStyles}>Email:</label>
@@ -95,13 +95,7 @@ const Signup = () => {
           </button>
         </div>
 
-        <label className={labelStyles}>Phone:</label>
-        <input
-          type="text"
-          placeholder="Phone (not required)"
-          className="w-full h-8 border border-solid border-[#242424] py-1 px-2.5 rounded bg-black text-[13px]"
-          name="phone"
-        />
+        
 
         <button className="w-full bg-black border border-solid border-[#242424] py-1.5 mt-2.5 rounded
         transition duration-150 ease hover:bg-[#1A1A1A] text-[13px]">

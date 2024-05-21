@@ -1,46 +1,39 @@
 import { Schema, model, models } from "mongoose";
 
+
 export interface UserDocument {
-  email: string;
-  password: string;
-  name: string;
-  phone: string;
-  image: string;
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+    email: string;
+    password: string;
+    username: string;
+    isArtist: boolean;
+    followingArtists: string[];
+    likedPosts: string[];
+    reviews: string[];
+    artworks: Object[];
+    notifications: string[];
+    workshops: string[];
+    enrolledWorkshops: string[];
+    _id: string;
+
 }
 
-const UserSchema = new Schema<UserDocument>({
-    email: {
-      type: String,
-      unique: true,
-      required: [true, "Email is required"],
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Email is invalid",
-      ],
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      select: false,
-    },
-    name: {
-      type: String,
-      required: [true, "Fullname is required"],
-      minLength: [3, "fullname must be at least 3 characters"],
-      maxLength: [25, "fullname must be at most 25 characters"],
-    },
-    phone: {
-      type: String,
-      default: ""
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
 
-const User = models.User || model<UserDocument>('User', UserSchema);
+let userSchema = new Schema<UserDocument>({
+    username: {type: String ,required:true, unique: true},
+    email: {type: String ,required:true, unique: true},
+    password: {type: String ,required:true},
+    isArtist: {type: Boolean, require: true, default: false},
+    followingArtists : {type: [String], default: []},
+    likedPosts: {type: [String], default: []},
+    reviews: {type: [String], default: []},
+    artworks: [{
+        type: Object
+    }],
+    notifications: {type: [String], default: null},
+    workshops: {type: [String], default: []},
+    enrolledWorkshops: {type: [String], default: []}
+}, {strict: false});
+
+const User = models?.User || model<UserDocument>('User', userSchema);
+
 export default User;
