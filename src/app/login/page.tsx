@@ -1,18 +1,21 @@
-"use client"
+"use client";
 
 import { FormEvent, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from 'next-auth/react';
+import { BiLogoGoogle } from 'react-icons/bi';
 import { BiSolidShow } from 'react-icons/bi';
 import { BiSolidHide } from 'react-icons/bi';
+import { useFormState } from "react-dom";
 
 const Login = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
+  const [state, formAction] = useFormState(signIn, undefined);
 
   const labelStyles = "w-full text-sm";
 
@@ -28,7 +31,6 @@ const Login = () => {
     const res = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: false,
     });
 
     if (res?.error) {
@@ -45,7 +47,7 @@ const Login = () => {
       <form
         className="p-6 xs:p-10 w-full max-w-[350px] flex flex-col justify-between items-center gap-2.5 
         border border-solid border-[#242424] bg-[#0a0a0a] rounded"
-        onSubmit={handleSubmit}
+        onSubmit={formAction}
       >
         {error && <div className="">{error}</div>}
         <h1 className="mb-5 w-full text-2xl font-bold">Signin</h1>
@@ -88,7 +90,15 @@ const Login = () => {
           <p className="w-8 h-6 bg-[#0a0a0a] z-10 flex items-center justify-center">or</p>
         </div>
 
-        
+        <button
+          className="flex py-2 px-4 text-sm align-middle items-center rounded text-999 bg-black 
+          border border-solid border-[#242424] transition duration-150 ease hover:bg-[#1A1A1A] gap-3"
+          onClick={(e) => {
+            e.preventDefault();
+            signIn("google")
+          }}>
+          <BiLogoGoogle className="text-2xl" /> Sign in with Google
+        </button>
         <Link href="/register" className="text-sm text-[#888] transition duration-150 ease hover:text-white">
           Don&apos;t have an account?
         </Link>
