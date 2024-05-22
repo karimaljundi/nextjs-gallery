@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 import styles from "./links.module.css";
 import NavLink from "./navLink/navLink";
 import Image from "next/image";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 const links = [
   {
     title: "Homepage",
@@ -24,49 +26,55 @@ const links = [
 
 const Links = () => {
   const [open, setOpen] = useState(false);
-  const { status } = useSession();
-  const {data: session} = useSession();
-  // console.log(authOptions);
+  const { status, data: session } = useSession();
+  const router = useRouter();
+  useLayoutEffect(() => {
+    if (status === "unauthenticated" && router.pathname !== "/login") {
+      router.push("/login");
+    }
+  }, [status, router]);
+  console.log(router.pathname);
+  // useLayoutEffect(() => {
+  //   if (status === "unauthenticated" && router.pathname !== "/login") {
+  //     redirect("/login");
+  //   }
+  // }, [status]);
 
   const showSession = () => {
     if (status === "authenticated") {
       return (
-        <NavLink item={{ title: "Logout", path: "/" }} className={styles.logout}
+        <NavLink
+          item={{ title: "Logout", path: "/" }}
+          className={styles.logout}
           onClick={() => {
-            signOut();
+            signOut(
+              {callbackUrl: "/"}
+            );
           }}
         />
-       
-      )
+      );
     } else if (status === "loading") {
-      return (
-        <span className="text-[#888] text-sm mt-7">Loading...</span>
-      )
+      return <span className="text-[#888] text-sm mt-7">Loading...</span>;
     } else {
-      return (
-        <NavLink item={{ title: "Login", path: "/login" }}/>
-      
-      )
-      
-    };
-
+      return <NavLink item={{ title: "Login", path: "/login" }} />;
+    }
   };
 
-// console.log("user:",  getUserById(session?.user?._id));
-  
   return (
     <div className={styles.container}>
       <div className={styles.links}>
-      
         {links.map((link) => (
-          <NavLink item={link} key={link.title} />
+          <NavLink
+            item={{
+              ...link,
+              path: status === "authenticated" ? link.path : "/login",
+            }}
+            key={link.title}
+          />
         ))}
-        {session?.user.isArtist ? (
-          <>
-            <NavLink item={{ title: "Admin", path: "/admin" }} />
-            
-          </>
-        ) : null}
+        {session?.user?.isArtist && (
+          <NavLink item={{ title: "Admin", path: "/admin" }} />
+        )}
         {showSession()}
       </div>
       <Image
@@ -80,7 +88,13 @@ const Links = () => {
       {open && (
         <div className={styles.mobileLinks}>
           {links.map((link) => (
-            <NavLink item={link} key={link.title} />
+            <NavLink
+              item={{
+                ...link,
+                path: status === "authenticated" ? link.path : "/login",
+              }}
+              key={link.title}
+            />
           ))}
         </div>
       )}

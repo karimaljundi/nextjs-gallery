@@ -14,7 +14,18 @@ export async function getArtworks()  {
     }
 
 }
+export async function saveArtwork(artwork: any){
+    try{
+        connectDB();
+        const newArtwork = new Artwork(artwork);
+        const savedArtwork = await newArtwork.save();
+        return savedArtwork;
+    }catch(err){
+        console.log(err);
+        throw new Error('Error saving artwork');
+    }
 
+}
 export async function getArtworkById(id: string){
     connectDB();
     const artwork = await Artwork.findById(id);
