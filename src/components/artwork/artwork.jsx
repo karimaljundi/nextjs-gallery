@@ -8,11 +8,11 @@ export default function artwork({artwork}) {
     <div className={styles.container}>
           <div className={styles.top}>
             {artwork.Poster && <div className={styles.imgContainer}>
-            <Image src='/public/test.jpeg' alt={artwork.Title} width={300} height={300} />
+            <img src={artwork.Poster} alt={artwork.Title} width={300} height={300} key={artwork._id} />
           </div>}
 </div>
 <div className={styles.bottom}>
-<Link className={styles.title} href={`/artworks/${artwork.id}`}>{artwork.title}</Link>
+<Link className={styles.Title} href={`/artworks/${artwork._id}`}>{artwork.Title}</Link>
 </div>
     </div>
   )

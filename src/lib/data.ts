@@ -14,18 +14,11 @@ export async function getArtworks()  {
     }
 
 }
-export async function saveArtwork(artwork: any){
-    try{
-        connectDB();
-        const newArtwork = new Artwork(artwork);
-        const savedArtwork = await newArtwork.save();
-        return savedArtwork;
-    }catch(err){
-        console.log(err);
-        throw new Error('Error saving artwork');
-    }
-
-}
+export async function saveArtwork(artworkData: any){
+       await connectDB();
+       const artwork = new Artwork(artworkData);
+       return artwork.save();
+};
 export async function getArtworkById(id: string){
     connectDB();
     const artwork = await Artwork.findById(id);
@@ -39,3 +32,8 @@ export async function getUserById(id: string) {
     const user = await User.findById(id);
     return user;
 }
+export async function getUserByEmail(email: string){
+    connectDB();
+    const user = await User.findOne({email: email});
+    return user ? user.toObject() : null;
+};

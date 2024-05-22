@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions  = {
           ...token,
           id: u.id,
           isArtist: u.isArtist,
+          username: u.username,
         };
       }
       return token;

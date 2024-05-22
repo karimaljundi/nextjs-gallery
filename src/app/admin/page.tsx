@@ -1,11 +1,15 @@
 'use client';
 import ImageUpload from "@/components/selectimage/selectimage";
 import React, { useState } from 'react';
-import artwork from "@/models/artwork";
-import { saveArtwork } from "@/lib/data";
+import { getUserByEmail, getUserById, saveArtwork } from "@/lib/data";
+import { useSession } from "next-auth/react";
+
+
 const Page = () => {
     const [selectedImage, setSelectedImage] = useState(null);
-
+    const { status, data: session } = useSession();
+    console.log(selectedImage)
+  console.log("session log:", session, status);
 const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -14,14 +18,23 @@ const handleSubmit = async (e) => {
     const category = form.category.value;
     const medium = form.medium.value;
     const description = form.description.value;
-    const artwork = {
-      title,
-      year,
-      category,
-      medium,
-      description,
-      poster: selectedImage,
-    };
+    const artist = await getUserByEmail(session?.user?.email || '');
+    const reader = new FileReader();
+    if (selectedImage) {
+      reader.readAsDataURL(selectedImage);
+    }
+    reader.onloadend = async () => {
+      const base64Image = reader.result;
+      const artwork = {
+        Title: title,
+        Year: year,
+        Category: category,
+        Medium: medium,
+        Description: description,
+        Poster: base64Image,
+        Artist: artist ? { ...artist } : null,
+      };
+    
     // Save the artwork
     try {
       const savedArtwork = await saveArtwork(artwork);
@@ -30,6 +43,7 @@ const handleSubmit = async (e) => {
       console.error("Error saving artwork:", error);
     }
 }
+  };
   const handleImageSelect = (imageFile) => {
     // Handle the selected image file (e.g., set it to state, upload it, etc.)
     setSelectedImage(imageFile);

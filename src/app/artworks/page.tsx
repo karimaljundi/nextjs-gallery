@@ -1,4 +1,3 @@
-'use client';
 
 import Artwork from '@/components/artwork/artwork';
 import React from 'react';
@@ -11,9 +10,9 @@ const Artworks = async() =>{
 
     return(
         <div>
-            {/* {getArtworksdata.map((artwork) => (
+            {getArtworksdata.map((artwork) => (
                 <Artwork key={artwork.id} artwork={artwork} />
-            ))} */}
+            ))}
         </div>
     )
 }

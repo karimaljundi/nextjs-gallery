@@ -1,8 +1,8 @@
-import {Schema, model, models} from "mongoose";
-
+import {Schema, Types, model, models} from "mongoose";
+import mongoose from "mongoose";
 export interface ArtworkDocument {
     Title: string;
-    Artist: string;
+    Artist: mongoose.Types.ObjectId;
     Year: string;
     Category: string;
     Medium: string;
@@ -15,7 +15,10 @@ export interface ArtworkDocument {
 
 const artworkSchema =new Schema<ArtworkDocument> ({
     Title:     { type: String, required:true},
-    Artist:      { type: String, required:true},
+    Artist: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
     Year: { type: String, required:true},
     Category: { type: String, required:true},
     Medium : { type: String, required:true},
